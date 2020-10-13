@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Linq;
 
 public class PlayerHealth : MonoBehaviour {
-    ReportGenerator reportGenerator;
+    //ReportGenerator reportGenerator;
     GameObject agent;
     LevelManager levelManager;
 
@@ -45,7 +45,7 @@ public class PlayerHealth : MonoBehaviour {
 
         agent = GameObject.Find("Monster");
         healthBar = GameObject.Find("PlayerHealthBar").GetComponent<HealthBar>();
-        reportGenerator = GameObject.Find("ReportGenerator").GetComponent<ReportGenerator>();
+        //reportGenerator = GameObject.Find("ReportGenerator").GetComponent<ReportGenerator>();
         levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
     }
 
@@ -58,11 +58,11 @@ public class PlayerHealth : MonoBehaviour {
             //Subtract 8 from the Agent's frustration and the number of player lost to counter the last frame of the game
             //Otherwise if the player is destroyed, the agent registers it as "player lost"
             if (GameObject.Find("Monster").GetComponent<Movement>().targetLastSeen) {
-                int playerLost = reportGenerator.currentPlaySession.agentLostPlayer--;
-                playerLost = Mathf.Clamp(playerLost,0, reportGenerator.currentPlaySession.agentLostPlayer);
+                //int playerLost = reportGenerator.currentPlaySession.agentLostPlayer--;
+                //playerLost = Mathf.Clamp(playerLost,0, reportGenerator.currentPlaySession.agentLostPlayer);
                 GameObject.Find("Monster").GetComponent<FrustrationComponent>().levelOfFrustration -= 8;
             }
-            reportGenerator.currentPlaySession.playerDied++;
+            //reportGenerator.currentPlaySession.playerDied++;
             //Destroy(gameObject);
         }
     }
@@ -71,7 +71,7 @@ public class PlayerHealth : MonoBehaviour {
         DetectFire();
         if (health <= 0) {
             levelManager.ResetStage(-25);
-            reportGenerator.currentPlaySession.playerDied++;
+            //reportGenerator.currentPlaySession.playerDied++;
             //Destroy(gameObject);
         }
 
@@ -90,7 +90,7 @@ public class PlayerHealth : MonoBehaviour {
     }
 
     IEnumerator RenderTakeDamage() {
-        
+
         while (true) {
             renderMaterial.material.color = Color.white;
             yield return new WaitForSeconds(0.1f);
@@ -110,14 +110,14 @@ public class PlayerHealth : MonoBehaviour {
             timer += Time.deltaTime;
             if (timer > dmgf) {
                 health -= fireDamage;
-                reportGenerator.currentPlaySession.healthLost += fireDamage;
+                //reportGenerator.currentPlaySession.healthLost += fireDamage;
                 dmgf = timer + delay;
             }
             isBurning = true;
         } else {
             isBurning = false;
         }
-    }   
+    }
 
     private void RepelishHealth() {
         if (!isBurning) {

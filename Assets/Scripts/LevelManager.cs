@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
-public class LevelManager : MonoBehaviour {
-    ReportGenerator reportGenerator;
+public class LevelManager : MonoBehaviour {    
     public bool moderatorActive;
     public bool doCountDown;
     public float timeLimit;
@@ -28,9 +28,11 @@ public class LevelManager : MonoBehaviour {
     GameObject agent;
     GameObject player;
 
+    //Game Events
+    public UnityEvent OnGameStart;
+    public UnityEvent OnGameEnd;
 
-    private void Awake() {
-        reportGenerator = GameObject.Find("ReportGenerator").GetComponent<ReportGenerator>();
+    private void Awake() {        
         if(doCountDown) {
             timer = GameObject.Find("Timer").GetComponent<Text>();
             countdown = timeLimit;
@@ -48,8 +50,10 @@ public class LevelManager : MonoBehaviour {
         if (player != null) {
             playerStartPosition = player.transform.position;
         }
-        
-        
+    }
+
+    private void Start() {
+        OnGameStart.Invoke();
     }
 
     public void ResetStage(int reward) {
@@ -105,7 +109,8 @@ public class LevelManager : MonoBehaviour {
         if (doCountDown) {
             countdown -= Time.deltaTime;
             if (countdown < 0) {
-                LoadSurvey();
+                OnGameEnd.Invoke();
+                //LoadSurvey();
                 //LoadEndScreen();
             }
 
@@ -116,11 +121,12 @@ public class LevelManager : MonoBehaviour {
         if (doScore) {
             score = Mathf.Max(0, score);
             scoreBoard.text = score.ToString() + " SCORE";
-            reportGenerator.currentPlaySession.score = score;
+
         }
     }
 
     public void LoadLevel(string name) {
+        // Moderator is a research assistant who has to hold down Ctrl for key commands to work.
         if (moderatorActive) {
             if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) {
                 SceneManager.LoadScene(name);
@@ -129,52 +135,5 @@ public class LevelManager : MonoBehaviour {
         if (!moderatorActive || (moderatorActive && name == "Tutorial")) {
             SceneManager.LoadScene(name);
         }
-    }
-
-    public void LoadSurvey() {
-        if (reportGenerator.sessionNumber > 1) {
-            SceneManager.LoadScene("Survey");
-        } else {
-            LoadEndScreen();
-        }
-    }
-
-    public void LoadEndScreen() {
-        if (reportGenerator.allSessionNumber > reportGenerator.sessionNumber) {
-            SceneManager.LoadScene("EndLevel");
-        } else {
-            SceneManager.LoadScene("EndGame");
-        }
-    }
-
-    public void LoadNextLevel() {
-        //Prevents subjects accidentally starting the next playsession
-        // Hold CTRL to activate "Next Level" button
-        if (moderatorActive) {
-            if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) {
-                int thisLevel = int.Parse(reportGenerator.currentPlaySession.levelID.Replace("Level - ", ""));
-                SceneManager.LoadScene("Level - " + GetRandomLevel());
-            }
-        } 
-
-        if (!moderatorActive) {
-            int thisLevel = int.Parse(reportGenerator.currentPlaySession.levelID.Replace("Level - ", ""));
-            SceneManager.LoadScene("Level - " + GetRandomLevel());
-        }
-    }
-
-    public void LoadRandomLevel() {
-        SceneManager.LoadScene("Level - " + GetRandomLevel());
-    }
-
-    public void QuitRequest(string name) {
-        Application.Quit();
-    }
-
-    int GetRandomLevel() {
-        int randomIndex = new System.Random().Next(0, reportGenerator.possibleLevels.Count);
-        int nextLevel = reportGenerator.possibleLevels[randomIndex];
-        reportGenerator.possibleLevels.RemoveAt(randomIndex);
-        return nextLevel;
     }
 }

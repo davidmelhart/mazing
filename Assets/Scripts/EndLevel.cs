@@ -14,7 +14,6 @@ public class EndLevel : MonoBehaviour {
 
     void Awake() {
         levelManager = GameObject.FindObjectOfType<LevelManager>();
-        reportGenerator = GameObject.Find("ReportGenerator").GetComponent<ReportGenerator>();
     }
 
     private void FixedUpdate() {
@@ -26,7 +25,6 @@ public class EndLevel : MonoBehaviour {
         }
  
         if (winCondition || LoseCondition) {
-            levelManager.LoadSurvey();
             //levelManager.LoadEndScreen();
             Destroy(gameObject);
         }

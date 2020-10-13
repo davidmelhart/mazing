@@ -5,10 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Start.unity
     guid: 18ef1e91c695c3949bf90015c9bdd2fb
-  - enabled: 1
+  - enabled: 0
     path: Assets/Tutorial.unity
     guid: 4790719e0fa77b24ab2bb06141797a6e
   - enabled: 0
@@ -26,13 +26,19 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/EndLevel.unity
     guid: 8d828b7f71a8e244391e63e096a3a026
-  - enabled: 1
+  - enabled: 0
     path: Assets/EndGame.unity
     guid: 5808c1a98f604894485233ff50c424a7
   - enabled: 0
     path: Assets/Survey.unity
     guid: 5dfbb4bacb742044da69616b859748b0
-  - enabled: 1
+  - enabled: 0
     path: Assets/Level - endless.unity
     guid: d41b7e8155ce7704495ded3c65cb31dd
+  - enabled: 1
+    path: Assets/Scenes_Online_Experiments/Tutorial.unity
+    guid: d1410d5d6d1a89e4aa67e2c42001798b
+  - enabled: 1
+    path: Assets/Scenes_Online_Experiments/Experiment.unity
+    guid: 86e4dfca813bd6c40bc6f440c78ae6fa
   m_configObjects: {}

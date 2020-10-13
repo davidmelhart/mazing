@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 using UnityEngine.Networking;
 using System.Runtime.InteropServices;
-using MoreMountains.CorgiEngine;
 
 public class ExperimentManager : MonoBehaviour
 {
@@ -23,17 +22,17 @@ public class ExperimentManager : MonoBehaviour
     public string nextLevel;
     public bool lastLevel;
     public bool recordLevel;
+    private LevelManager levelManager;
 
     private void Awake() {
+        levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
         if (recordLevel) {
             InitRecord();
         }
-    }
 
-    void Start() {
-        LevelManager.Instance.OnGameEnds.AddListener(EndLevel);
+        levelManager.OnGameEnd.AddListener(EndLevel);
         if (recordLevel) {
-            LevelManager.Instance.OnGameStarts.AddListener(StartRecord);
+            levelManager.OnGameStart.AddListener(StartRecord);
         }
     }
 
@@ -46,28 +45,9 @@ public class ExperimentManager : MonoBehaviour
     /// Starts the game shutdown coroutine.
     /// </summary>
     /// <returns>yield enumerator</returns>
-    public IEnumerator EndLevelProcess() {
-        LevelManager.Instance.FreezeCharacters();
+    public IEnumerator EndLevelProcess() {     
         GameObject.FindWithTag("Player").SetActive(false);
-        if (!lastLevel) {
-            for (int i = endCountdownTimer; i > -1; i--) {
-                endCountdown.text = String.Format("Next level loads in {0} sec...", i);
-                if (i <= 0) {
-                    SceneManager.LoadScene(nextLevel);
-                }
-                yield return new WaitForSeconds(1f);
-            }
-        } else {
-            for (int i = endCountdownTimer; i > -1; i--) {
-                endCountdown.text = String.Format("Game ends in {0} sec...", i);
-                if (i <= 0) {
-                    if (recordLevel) {
-                        endCountdown.text = String.Format("Please stand by... \n Your gameplay is being submitted...");
-                        StopRecord();
-                    }
-                }
-                yield return new WaitForSeconds(1f);
-            }
-        }
+        yield return new WaitForSeconds(0.5f);
+        StopRecord();
     }
 }
