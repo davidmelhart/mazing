@@ -17,19 +17,18 @@ public class ExperimentManager : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void StopRecord();
 
-    public Text endCountdown;
-    public int endCountdownTimer;
-    public string nextLevel;
-    public bool lastLevel;
     public bool recordLevel;
+    public bool warmRecorder;
     private LevelManager levelManager;
 
     private void Awake() {
         levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
-        if (recordLevel) {
+        if (warmRecorder) {
             InitRecord();
         }
+    }
 
+    private void Start() {
         levelManager.OnGameEnd.AddListener(EndLevel);
         if (recordLevel) {
             levelManager.OnGameStart.AddListener(StartRecord);
@@ -37,7 +36,6 @@ public class ExperimentManager : MonoBehaviour
     }
 
     private void EndLevel() {
-        endCountdown.gameObject.SetActive(true);
         StartCoroutine(EndLevelProcess());
     }
 
@@ -45,8 +43,9 @@ public class ExperimentManager : MonoBehaviour
     /// Starts the game shutdown coroutine.
     /// </summary>
     /// <returns>yield enumerator</returns>
-    public IEnumerator EndLevelProcess() {     
-        GameObject.FindWithTag("Player").SetActive(false);
+    public IEnumerator EndLevelProcess() {
+        Debug.Log("End Game");
+        //GameObject.FindWithTag("Player").SetActive(false);
         yield return new WaitForSeconds(0.5f);
         StopRecord();
     }

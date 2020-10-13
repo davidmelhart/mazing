@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Health : MonoBehaviour {
-    ReportGenerator reportGenerator;
+    //ReportGenerator reportGenerator;
     LevelManager levelManager;
 
     public GameObject destroyEffect;
@@ -11,7 +11,7 @@ public class Health : MonoBehaviour {
     public LayerMask fireMask;
     private Renderer renderMaterial;
 
-    [Range(1,100)]
+    [Range(1, 100)]
     public int health = 100;
     public float damageFrequency = 0.1f;
     public int fireDamage = 1;
@@ -23,7 +23,13 @@ public class Health : MonoBehaviour {
 
     [HideInInspector]
     public bool isBurning = false;
+    [HideInInspector]
+    public bool botDied = false;
+
     private bool renderingDamage = false;
+
+    private int lastHealth;
+    public int deltaHealth;
 
     Color originalColor;
 
@@ -36,17 +42,22 @@ public class Health : MonoBehaviour {
         dmgf = damageFrequency;
         delay = dmgf;
         healthBar = GameObject.Find("HealthBar").GetComponent<HealthBar>();
-        reportGenerator = GameObject.Find("ReportGenerator").GetComponent<ReportGenerator>();
-        levelManager= GameObject.Find("LevelManager").GetComponent<LevelManager>();
+        //reportGenerator = GameObject.Find("ReportGenerator").GetComponent<ReportGenerator>();
+        levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
+        lastHealth = health;
     }
 
     private void Update() {
+        deltaHealth = health - lastHealth;
+        lastHealth = health;
+
         bulletColliding = false;
 
         DetectFire();
         if (health <= 0) {
+            botDied = true;
             levelManager.ResetStage(15);
-            reportGenerator.currentPlaySession.agentDied++;
+            //reportGenerator.currentPlaySession.agentDied++;
             //Destroy(gameObject);
         }
 
@@ -60,6 +71,10 @@ public class Health : MonoBehaviour {
             StopCoroutine("RenderTakeDamage");
             renderMaterial.material.color = originalColor;
         }
+    }
+
+    private void LateUpdate() {
+        botDied = false;
     }
 
     IEnumerator RenderTakeDamage() {
@@ -85,22 +100,22 @@ public class Health : MonoBehaviour {
     }
 
     private void DetectFire() {
-       if (Physics2D.OverlapCircle(transform.position, 1f, fireMask)) {
+        if (Physics2D.OverlapCircle(transform.position, 1f, fireMask)) {
             timer += Time.deltaTime;
             if (timer > dmgf) {
                 health -= fireDamage;
-                
-                reportGenerator.currentPlaySession.agentHealthLost += fireDamage;
+
+                //reportGenerator.currentPlaySession.agentHealthLost += fireDamage;
                 levelManager.score += fireDamage;
                 dmgf = timer + delay;
             }
             isBurning = true;
-       } else {
+        } else {
             isBurning = false;
         }
     }
 
-   void OnTriggerEnter(Collider collision) {
+    void OnTriggerEnter(Collider collision) {
         if (collision.gameObject.CompareTag("projectile")) {
             if (bulletColliding) {
                 return;
@@ -109,7 +124,7 @@ public class Health : MonoBehaviour {
                 Debug.Log("Hit");
                 StartCoroutine("RenderHitDamage");
                 health -= bulletDamage;
-                reportGenerator.currentPlaySession.agentHealthLost += bulletDamage;
+                //reportGenerator.currentPlaySession.agentHealthLost += bulletDamage;
                 levelManager.score += bulletDamage;
             }
         }

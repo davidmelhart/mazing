@@ -31,8 +31,15 @@ public class PlayerHealth : MonoBehaviour {
 
     [HideInInspector]
     public bool isBurning = false;
+    [HideInInspector]
+    public bool isHealing = false;
+    [HideInInspector]
+    public bool playerDied = false;
 
     private bool renderingDamage = false;
+
+    private int lastHealth;
+    public int deltaHealth;
 
     private void Awake() {
         renderMaterial = GetComponent<Renderer>();
@@ -47,6 +54,7 @@ public class PlayerHealth : MonoBehaviour {
         healthBar = GameObject.Find("PlayerHealthBar").GetComponent<HealthBar>();
         //reportGenerator = GameObject.Find("ReportGenerator").GetComponent<ReportGenerator>();
         levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
+        lastHealth = health;
     }
 
     private void OnCollisionEnter(Collision collision) {
@@ -59,7 +67,7 @@ public class PlayerHealth : MonoBehaviour {
             //Otherwise if the player is destroyed, the agent registers it as "player lost"
             if (GameObject.Find("Monster").GetComponent<Movement>().targetLastSeen) {
                 //int playerLost = reportGenerator.currentPlaySession.agentLostPlayer--;
-                //playerLost = Mathf.Clamp(playerLost,0, reportGenerator.currentPlaySession.agentLostPlayer);
+                //playerLost = Mathf.Clamp(playerLost, 0, reportGenerator.currentPlaySession.agentLostPlayer);
                 GameObject.Find("Monster").GetComponent<FrustrationComponent>().levelOfFrustration -= 8;
             }
             //reportGenerator.currentPlaySession.playerDied++;
@@ -68,8 +76,12 @@ public class PlayerHealth : MonoBehaviour {
     }
 
     private void Update() {
+        deltaHealth = health - lastHealth;
+        lastHealth = health;
+
         DetectFire();
         if (health <= 0) {
+            playerDied = true;
             levelManager.ResetStage(-25);
             //reportGenerator.currentPlaySession.playerDied++;
             //Destroy(gameObject);
@@ -87,6 +99,11 @@ public class PlayerHealth : MonoBehaviour {
             StopCoroutine("RenderTakeDamage");
             renderMaterial.material.color = originalColor;
         }
+    }
+
+    private void LateUpdate() {
+        isHealing = false;
+        playerDied = false;
     }
 
     IEnumerator RenderTakeDamage() {
@@ -125,6 +142,7 @@ public class PlayerHealth : MonoBehaviour {
             if (healthTimer > hfrq) {
                 health++;
                 hfrq = healthTimer + healthDelay;
+                isHealing = true;
             }
         }
         health = Mathf.Clamp(health, 0, 100);

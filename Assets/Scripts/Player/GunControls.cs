@@ -57,7 +57,7 @@ public class GunControls : MonoBehaviour{
     private void Awake() {
         Cursor.visible = false;
         player = GameObject.Find("PlayerController").GetComponent<PlayerController>();
-        reportGenerator = GameObject.Find("ReportGenerator").GetComponent<ReportGenerator>();
+        //reportGenerator = GameObject.Find("ReportGenerator").GetComponent<ReportGenerator>();
     }
 
     void Start()
@@ -146,7 +146,7 @@ public class GunControls : MonoBehaviour{
         GameObject bullet = Instantiate(projectile, bulletPos, player.transform.rotation) as GameObject;
         bullet.GetComponent<Rigidbody>().AddForce(bullet.transform.up * bulletSpeed);
 
-        reportGenerator.currentPlaySession.shotsFired++;
+        //reportGenerator.currentPlaySession.shotsFired++;
     }
 
     void ThrowBomb()
@@ -167,6 +167,6 @@ public class GunControls : MonoBehaviour{
         firebomb.GetComponent<Rigidbody>().AddForce(firebomb.transform.up * bombThrowSpeed);
         firebomb.transform.parent = trigger.gameObject.transform;
 
-        reportGenerator.currentPlaySession.bombsDropped++;
+        //reportGenerator.currentPlaySession.bombsDropped++;
     }
 }

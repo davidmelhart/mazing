@@ -31,6 +31,8 @@ public class LevelManager : MonoBehaviour {
     //Game Events
     public UnityEvent OnGameStart;
     public UnityEvent OnGameEnd;
+    private bool gameEnded = false;
+    private bool gameStarted = false;
 
     private void Awake() {        
         if(doCountDown) {
@@ -53,7 +55,10 @@ public class LevelManager : MonoBehaviour {
     }
 
     private void Start() {
-        OnGameStart.Invoke();
+        if(!gameStarted) {
+            gameStarted = true;
+            OnGameStart.Invoke();
+        }
     }
 
     public void ResetStage(int reward) {
@@ -109,7 +114,11 @@ public class LevelManager : MonoBehaviour {
         if (doCountDown) {
             countdown -= Time.deltaTime;
             if (countdown < 0) {
-                OnGameEnd.Invoke();
+                if (!gameEnded) {
+                    gameEnded = true;
+                    OnGameEnd.Invoke();
+                }
+                
                 //LoadSurvey();
                 //LoadEndScreen();
             }

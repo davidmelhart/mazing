@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class FrustrationComponent : MonoBehaviour {
-    ReportGenerator reportGenerator;
+    //ReportGenerator reportGenerator;
 
     [Tooltip("Disabling this sets Frustration to the Min Frusation value indefinitely.")]
     public bool frustrationIsActive = true;
-    
+
     public bool lockFrustration = false;
     [Range(0, 100)]
-    public int minFrustration = 0;    
+    public int minFrustration = 0;
     [Range(0, 100)]
     public int maxFrustration = 100;
     [Range(0, 100)]
@@ -47,25 +47,25 @@ public class FrustrationComponent : MonoBehaviour {
         status = agent.GetComponent<Health>();
         viewSectorArea = (fov.viewAngle / 360) * Mathf.PI * Mathf.Pow(fov.viewRadius, 2f);
         Debug.Log(viewSectorArea);
-        reportGenerator = GameObject.Find("ReportGenerator").GetComponent<ReportGenerator>();
+        //reportGenerator = GameObject.Find("ReportGenerator").GetComponent<ReportGenerator>();
         speed = movement.speed;
         coreRotationSpeed = movement.coreRotationSpeed;
     }
 
-    void FixedUpdate () {
-        reportGenerator.currentPlaySession.agentAvgFrustration.Add(levelOfFrustration);
+    void FixedUpdate() {
+        //reportGenerator.currentPlaySession.agentAvgFrustration.Add(levelOfFrustration);
         healthLost = 100 - status.health;
-        fov.viewAngle = Mathf.Abs(levelOfFrustration - 100)*1.35f;
-        fov.viewRadius = Mathf.Clamp(Mathf.Sqrt((viewSectorArea / (fov.viewAngle / 360)) / Mathf.PI),0,20);
+        fov.viewAngle = Mathf.Abs(levelOfFrustration - 100) * 1.35f;
+        fov.viewRadius = Mathf.Clamp(Mathf.Sqrt((viewSectorArea / (fov.viewAngle / 360)) / Mathf.PI), 0, 20);
         hearing.hearingRadius = 4 + Mathf.Abs(levelOfFrustration - 100) * 0.06f;
-        hearing.detectionChance = 10 + Mathf.RoundToInt(Mathf.Clamp(levelOfFrustration*0.90f,0,100));
+        hearing.detectionChance = 10 + Mathf.RoundToInt(Mathf.Clamp(levelOfFrustration * 0.90f, 0, 100));
         movement.lookAroundCycle = Mathf.RoundToInt(Mathf.Abs(levelOfFrustration - 100) * 0.03f);
         movement.coreRotationSpeed = 1 + levelOfFrustration * 0.04f;
         movement.speed = speed + levelOfFrustration * 0.005f;
 
         movement.riskAversion = Mathf.Abs(levelOfFrustration - 100);
 
-    // Checking for frustrating events here
+        // Checking for frustrating events here
         CheckPathLengths();
         CheckTargetVisible();
         if (movement.isWaiting && !decreasingFrustration) {
@@ -78,12 +78,12 @@ public class FrustrationComponent : MonoBehaviour {
         }
         CheckHealth();
 
-    // Checking for frustration-resolving events here
+        // Checking for frustration-resolving events here
 
         // Debug mode - Incremental increase of frustration with time (sec)     
         if (timeStamp <= Time.time && increaseWithTime) {
             timeStamp = Time.time + incrementDelay;
-            levelOfFrustration ++;
+            levelOfFrustration++;
             levelOfFrustration = Mathf.Clamp(levelOfFrustration, healthLost, 95);
         }
 
@@ -134,13 +134,13 @@ public class FrustrationComponent : MonoBehaviour {
 
         if (!targetIsVisible && targetWasVisible) {
             Debug.Log("Target lost, getting frustrated");
-            reportGenerator.currentPlaySession.agentLostPlayer++;
+            //reportGenerator.currentPlaySession.agentLostPlayer++;
             levelOfFrustration += 7;
         }
 
         if (targetIsVisible && !targetWasVisible) {
             Debug.Log("Spotted the player");
-            reportGenerator.currentPlaySession.agentDetectedPlayer++;
+            //reportGenerator.currentPlaySession.agentDetectedPlayer++;
             levelOfFrustration += 3;
         }
 
@@ -149,14 +149,14 @@ public class FrustrationComponent : MonoBehaviour {
 
     // Clamps the level of frustration to the amount of health lost
     private void CheckHealth() {
-        levelOfFrustration = Mathf.Clamp(levelOfFrustration, healthLost*0.5f, 100);
+        levelOfFrustration = Mathf.Clamp(levelOfFrustration, healthLost * 0.5f, 100);
     }
 
     IEnumerator DecreaseFrustration() {
         //Debug.Log("Decreasing Frustraion");
         while (true) {
             yield return new WaitForSeconds(0.1f);
-            levelOfFrustration-=0.1f;
+            levelOfFrustration -= 0.1f;
         }
     }
 }

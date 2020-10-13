@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour {
 
     private void Start()
     {
-        reportGenerator = GameObject.Find("ReportGenerator").GetComponent<ReportGenerator>();
+        //reportGenerator = GameObject.Find("ReportGenerator").GetComponent<ReportGenerator>();
         rigidBody = GetComponent<Rigidbody>();
         originalMovementSpeed = movementSpeed;
         renderMaterial = GetComponent<Renderer>();
@@ -61,7 +61,7 @@ public class PlayerController : MonoBehaviour {
         //Dashing controls
         if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift) || Input.GetKeyDown(KeyCode.Space)) {
             if (dashTimeStamp <= Time.time && !dashing) {
-                reportGenerator.currentPlaySession.numberOfDashes++;
+                //reportGenerator.currentPlaySession.numberOfDashes++;
                 renderMaterial.material.color = new Color32(35, 130, 140, 255);
                 dashing = true;
                 dashTimeStamp = Time.time + dashCoolDown + dashDuration;

@@ -15,12 +15,12 @@ public class EndLevelScreen : MonoBehaviour {
         Debug.Log("Background Loaded.");
         Scene scene = SceneManager.GetActiveScene();
         if (scene.name != "Tutorial") {
-            reportGenerator = GameObject.Find("ReportGenerator").GetComponent<ReportGenerator>();
+            //reportGenerator = GameObject.Find("ReportGenerator").GetComponent<ReportGenerator>();
             levelIndicator = GameObject.Find("LevelIndicator").GetComponent<Text>();
-            levelIndicator.text = ("level " + (4 - reportGenerator.possibleLevels.Count) + "/4");
+            //levelIndicator.text = ("level " + (4 - reportGenerator.possibleLevels.Count) + "/4");
 
             scoreBoard = GameObject.Find("Score").GetComponent<Text>();
-            scoreBoard.text = reportGenerator.currentPlaySession.score.ToString();
+            //scoreBoard.text = reportGenerator.currentPlaySession.score.ToString();
         }
         
 
