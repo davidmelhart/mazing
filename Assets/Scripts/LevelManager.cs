@@ -34,6 +34,15 @@ public class LevelManager : MonoBehaviour {
     private bool gameEnded = false;
     private bool gameStarted = false;
 
+    //FPS Counter
+    private int fps = 0;
+    private float fpsTimer;
+    public float fpsRefreshRate = 1f;
+    public Text fpsText;
+    public int fpsLimit;
+    private Color fpsIndicatorColor;
+    private Color fpsWarningColor = new Color(0.9f, 0, 0.2f, 1);
+
     private void Awake() {        
         if(doCountDown) {
             timer = GameObject.Find("Timer").GetComponent<Text>();
@@ -55,9 +64,36 @@ public class LevelManager : MonoBehaviour {
     }
 
     private void Start() {
-        if(!gameStarted) {
+        fpsIndicatorColor = fpsText.color;
+
+        if (!gameStarted) {
             gameStarted = true;
-            OnGameStart.Invoke();
+            StartCoroutine(LateStart());
+        }
+
+        //Make the cursor invisible.
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.ForceSoftware);
+        Cursor.visible = false;
+    }
+
+    IEnumerator LateStart() {
+        yield return new WaitForFixedUpdate();
+        OnGameStart.Invoke();
+        yield return null;
+    }
+
+    private void Update() {
+        if (Time.unscaledTime > fpsTimer) {
+            fps = (int)(1f / Time.unscaledDeltaTime);
+            fpsText.text = "FPS: " + fps;
+            fpsTimer = Time.unscaledTime + fpsRefreshRate;
+            
+            // Gives 3 seconds for the game to stabilize
+            if (fps < fpsLimit && Time.timeSinceLevelLoad > 3f) {
+                fpsText.color = fpsWarningColor;
+            } else {
+                fpsText.color = fpsIndicatorColor;
+            }
         }
     }
 
@@ -123,9 +159,9 @@ public class LevelManager : MonoBehaviour {
                 //LoadEndScreen();
             }
 
-            timer.text = Mathf.RoundToInt(countdown) > 9 ? 
-                         Mathf.RoundToInt(countdown).ToString() : 
-                         "0" + Mathf.RoundToInt(countdown).ToString();
+            timer.text = Mathf.RoundToInt(Mathf.Clamp(countdown, 0, timeLimit)) > 9 ? 
+                         Mathf.RoundToInt(Mathf.Clamp(countdown, 0, timeLimit)).ToString() : 
+                         "0" + Mathf.RoundToInt(Mathf.Clamp(countdown, 0, timeLimit)).ToString();
         }
         if (doScore) {
             score = Mathf.Max(0, score);

@@ -110,6 +110,7 @@ public class ReportGenerator : MonoBehaviour {
         });
         levelManager.OnGameStart.AddListener(delegate {
             if (recordGameplay && !recordStarted) {
+                Debug.Log("Record Started!");
                 ResetForm();
                 recordStarted = true;
                 StartCoroutine(UpdatePackage(period));
@@ -286,7 +287,9 @@ public class ReportGenerator : MonoBehaviour {
         form.AddField("keyPressCount", keyPresses.Count.ToString());
         form.AddField("keyPresses", String.Join("|", keyPresses.ToArray()));
         form.AddField("idleTime", ((float)idleTime / (float)fullTime).ToString());
-
+        form.AddField("botFrustrationActive", botFrustrationActive.ToString());
+        form.AddField("botFrustrationLocked", botFrustrationLocked.ToString());
+        form.AddField("botFrustrationRange", botFrustrationRange.ToString());
         form.AddField("score", score.DefaultIfEmpty(0).Average().ToString());
         form.AddField("botDistanceTraveled", botDistanceTraveled.DefaultIfEmpty(0).Average().ToString());
         form.AddField("botPositionX", botPositionX.DefaultIfEmpty(0).Average().ToString());
