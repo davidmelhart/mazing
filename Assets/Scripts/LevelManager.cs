@@ -9,6 +9,8 @@ using UnityEngine.Events;
 public class LevelManager : MonoBehaviour {    
     public bool moderatorActive;
     public bool doCountDown;
+    public bool silentCountDown;
+    public bool warnStart;
     public float timeLimit;
     private float countdown;
     private Text timer;
@@ -45,7 +47,9 @@ public class LevelManager : MonoBehaviour {
 
     private void Awake() {        
         if(doCountDown) {
-            timer = GameObject.Find("Timer").GetComponent<Text>();
+            if (!silentCountDown) {
+                timer = GameObject.Find("Timer").GetComponent<Text>();
+            }
             countdown = timeLimit;
         }
         if (doScore) {
@@ -69,6 +73,9 @@ public class LevelManager : MonoBehaviour {
         if (!gameStarted) {
             gameStarted = true;
             StartCoroutine(LateStart());
+            if (warnStart) {
+                StartCoroutine(RemindStart());
+            }
         }
 
         //Make the cursor invisible.
@@ -79,6 +86,15 @@ public class LevelManager : MonoBehaviour {
     IEnumerator LateStart() {
         yield return new WaitForFixedUpdate();
         OnGameStart.Invoke();
+        yield return null;
+    }
+
+    IEnumerator RemindStart() {
+        yield return new WaitForSeconds(30);
+        Button startButton = GameObject.Find("Start").GetComponent<Button>();
+        ColorBlock cb = startButton.colors;
+        cb.normalColor = fpsWarningColor;
+        startButton.colors = cb;
         yield return null;
     }
 
@@ -158,10 +174,11 @@ public class LevelManager : MonoBehaviour {
                 //LoadSurvey();
                 //LoadEndScreen();
             }
-
-            timer.text = Mathf.RoundToInt(Mathf.Clamp(countdown, 0, timeLimit)) > 9 ? 
-                         Mathf.RoundToInt(Mathf.Clamp(countdown, 0, timeLimit)).ToString() : 
-                         "0" + Mathf.RoundToInt(Mathf.Clamp(countdown, 0, timeLimit)).ToString();
+            if (!silentCountDown) {
+                timer.text = Mathf.RoundToInt(Mathf.Clamp(countdown, 0, timeLimit)) > 9 ?
+                             Mathf.RoundToInt(Mathf.Clamp(countdown, 0, timeLimit)).ToString() :
+                             "0" + Mathf.RoundToInt(Mathf.Clamp(countdown, 0, timeLimit)).ToString();
+            }
         }
         if (doScore) {
             score = Mathf.Max(0, score);

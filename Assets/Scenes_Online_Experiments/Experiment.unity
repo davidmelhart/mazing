@@ -324,7 +324,7 @@ PrefabInstance:
     - target: {fileID: 114967725231005274, guid: a41047f2f6724fa4a8ba4e4e470b4d58,
         type: 3}
       propertyPath: url
-      value: https://pagan.davidmelhart.com/util/mazing_logger.php
+      value: xxx
       objectReference: {fileID: 0}
     - target: {fileID: 114967725231005274, guid: a41047f2f6724fa4a8ba4e4e470b4d58,
         type: 3}
@@ -4164,22 +4164,22 @@ PrefabInstance:
     - target: {fileID: 114720475240824702, guid: 998c0213913d56148a9bde0799adbecf,
         type: 3}
       propertyPath: minFrustration
-      value: 50
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114720475240824702, guid: 998c0213913d56148a9bde0799adbecf,
         type: 3}
       propertyPath: maxFrustration
-      value: 100
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114720475240824702, guid: 998c0213913d56148a9bde0799adbecf,
         type: 3}
       propertyPath: frustrationIsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114720475240824702, guid: 998c0213913d56148a9bde0799adbecf,
         type: 3}
       propertyPath: lockFrustration
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114827046803738070, guid: 998c0213913d56148a9bde0799adbecf,
         type: 3}
